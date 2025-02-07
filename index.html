@@ -143,10 +143,6 @@
             console.log(userInfo);
             // Show success toast
             showToast("User enrolled successfully!");
-            // Refresh the page after 2 seconds
-            setTimeout(() => {
-              location.reload(); // Refresh the page
-            }, 2000);
           })
           .catch((error) => {
             // If the user is already enrolled
@@ -154,12 +150,16 @@
               setStatus("You are already registered!", "error");
               showToast("You are already registered!");
             } else {
-              setStatus("Enrollment failed: " + " You have already enrolled!", "error");
+              setStatus("Enrollment failed: " + error.message, "error");
               console.error("Enrollment failed: ", error);
             }
           })
           .finally(() => {
             document.getElementById("enrollButton").disabled = false;
+            // Refresh the page after enrollment (success or failure)
+            setTimeout(() => {
+              location.reload(); // Refresh the page
+            }, 2000);
           });
       }
 
@@ -174,10 +174,6 @@
             console.log("Linked facial ID: " + userData.facialId);
             // Show success toast
             showToast("Attendance marked successfully!");
-            // Refresh the page after 2 seconds
-            setTimeout(() => {
-              location.reload(); // Refresh the page
-            }, 2000);
           })
           .catch((error) => {
             setStatus("Authentication failed: " + error.message, "error");
@@ -185,6 +181,10 @@
           })
           .finally(() => {
             document.getElementById("authenticateButton").disabled = false;
+            // Refresh the page after marking attendance (success or failure)
+            setTimeout(() => {
+              location.reload(); // Refresh the page
+            }, 2000);
           });
       }
     </script>
