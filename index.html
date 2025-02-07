@@ -67,6 +67,30 @@
       .error {
         color: #dc3545;
       }
+
+      /* Toast Notification Styles */
+      .toast {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: white;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      .toast.show {
+        visibility: visible;
+        opacity: 1;
+      }
     </style>
   </head>
   <body>
@@ -82,6 +106,9 @@
       <div id="status" class="status-message"></div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
     <script src="https://cdn.faceio.net/fio.js"></script>
     <script>
       const faceio = new faceIO("fioaafbf"); // Replace with your actual API key
@@ -92,6 +119,17 @@
         statusDiv.className = "status-message " + statusClass;
       }
 
+      // Function to display the toast message
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.className = "toast show"; // Show the toast
+        setTimeout(() => {
+          toast.className = toast.className.replace("show", ""); // Hide the toast after 3 seconds
+        }, 3000);
+      }
+
+      // Enroll a new user
       function enrollNewUser() {
         setStatus("Enrollment in progress...", "loading");
         document.getElementById("enrollButton").disabled = true;
@@ -103,6 +141,12 @@
           .then((userInfo) => {
             setStatus("User enrolled successfully!", "success");
             console.log(userInfo);
+            // Show success toast
+            showToast("User enrolled successfully!");
+            // Refresh the page after 2 seconds
+            setTimeout(() => {
+              location.reload(); // Refresh the page
+            }, 2000);
           })
           .catch((error) => {
             setStatus("Enrollment failed: " + error.message, "error");
@@ -113,6 +157,7 @@
           });
       }
 
+      // Authenticate a user (mark attendance)
       function authenticateUser() {
         setStatus("Authenticating...", "loading");
         document.getElementById("authenticateButton").disabled = true;
@@ -121,6 +166,12 @@
           .then((userData) => {
             setStatus("Attendance marked successfully!", "success");
             console.log("Linked facial ID: " + userData.facialId);
+            // Show success toast
+            showToast("Attendance marked successfully!");
+            // Refresh the page after 2 seconds
+            setTimeout(() => {
+              location.reload(); // Refresh the page
+            }, 2000);
           })
           .catch((error) => {
             setStatus("Authentication failed: " + error.message, "error");
