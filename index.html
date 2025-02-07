@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Recognition Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(45deg, #1e3c72, #2a5298);
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        color: white;
+      }
+
+      h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.8);
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .button {
+        background: linear-gradient(90deg, #ff8c00, #ff0080);
+        color: white;
+        padding: 15px 32px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        box-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+        transition: all 0.3s ease;
+      }
+
+      .button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(255, 165, 0, 1);
+      }
+
+      .status-message {
+        margin-top: 20px;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+
+      .loading {
+        color: orange;
+      }
+
+      .success {
+        color: #28a745;
+      }
+
+      .error {
+        color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Face Recognition Attendance Demo</h2>
+
+    <div class="container">
+      <button id="enrollButton" class="button" onclick="enrollNewUser()">
+        Enroll Face
+      </button>
+      <button id="authenticateButton" class="button" onclick="authenticateUser()">
+        Mark Attendance
+      </button>
+      <div id="status" class="status-message"></div>
+    </div>
+
+    <script src="https://cdn.faceio.net/fio.js"></script>
+    <script>
+      const faceio = new faceIO("fioaafbf"); // Replace with your actual API key
+
+      function setStatus(message, statusClass) {
+        const statusDiv = document.getElementById("status");
+        statusDiv.textContent = message;
+        statusDiv.className = "status-message " + statusClass;
+      }
+
+      function enrollNewUser() {
+        setStatus("Enrollment in progress...", "loading");
+        document.getElementById("enrollButton").disabled = true;
+        faceio
+          .enroll({
+            locale: "auto",
+            payload: { whoami: 123456, email: "john.doe@example.com" },
+          })
+          .then((userInfo) => {
+            setStatus("User enrolled successfully!", "success");
+            console.log(userInfo);
+          })
+          .catch((error) => {
+            setStatus("Enrollment failed: " + error.message, "error");
+            console.error("Enrollment failed: ", error);
+          })
+          .finally(() => {
+            document.getElementById("enrollButton").disabled = false;
+          });
+      }
+
+      function authenticateUser() {
+        setStatus("Authenticating...", "loading");
+        document.getElementById("authenticateButton").disabled = true;
+        faceio
+          .authenticate({ locale: "auto" })
+          .then((userData) => {
+            setStatus("Attendance marked successfully!", "success");
+            console.log("Linked facial ID: " + userData.facialId);
+          })
+          .catch((error) => {
+            setStatus("Authentication failed: " + error.message, "error");
+            console.error("Authentication failed: ", error);
+          })
+          .finally(() => {
+            document.getElementById("authenticateButton").disabled = false;
+          });
+      }
+    </script>
+  </body>
+</html>
