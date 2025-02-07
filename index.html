@@ -154,7 +154,7 @@
               setStatus("You are already registered!", "error");
               showToast("You are already registered!");
             } else {
-              setStatus("Enrollment failed: " + error.message, "error");
+              setStatus("Enrollment failed: " + " You have already enrolled!", "error");
               console.error("Enrollment failed: ", error);
             }
           })
