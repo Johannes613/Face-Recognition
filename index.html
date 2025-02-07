@@ -149,8 +149,14 @@
             }, 2000);
           })
           .catch((error) => {
-            setStatus("Enrollment failed: " + error.message, "error");
-            console.error("Enrollment failed: ", error);
+            // If the user is already enrolled
+            if (error.code === 11) { // Error code for duplicate face (already enrolled)
+              setStatus("You are already registered!", "error");
+              showToast("You are already registered!");
+            } else {
+              setStatus("Enrollment failed: " + error.message, "error");
+              console.error("Enrollment failed: ", error);
+            }
           })
           .finally(() => {
             document.getElementById("enrollButton").disabled = false;
